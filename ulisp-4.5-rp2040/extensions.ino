@@ -1,8 +1,39 @@
 /*
- User Extensions
+   RP2040
 */
-  
-// Definitions
+const char stringtoesp32[] PROGMEM = ":to-esp32";
+const char stringfromesp32[] PROGMEM = ":from-esp32";
+const char stringgreenled[] PROGMEM = ":green-led";
+const char stringgp2[] PROGMEM = ":gp2";
+const char stringgp3[] PROGMEM = ":gp3";
+const char stringgp4[] PROGMEM = ":gp4";
+const char stringgp5[] PROGMEM = ":gp5";
+const char stringgp6[] PROGMEM = ":gp6";
+const char stringgp7[] PROGMEM = ":gp7";
+const char stringgp8[] PROGMEM = ":gp8";
+const char stringgp9[] PROGMEM = ":gp9";
+const char stringgp10[] PROGMEM = ":gp10";
+const char stringgp11[] PROGMEM = ":gp11";
+const char stringgp12[] PROGMEM = ":gp12";
+const char stringgp13[] PROGMEM = ":gp13";
+const char stringgp14[] PROGMEM = ":gp14";
+const char stringgp15[] PROGMEM = ":gp15";
+const char stringgp16[] PROGMEM = ":gp16";
+const char stringgp17[] PROGMEM = ":gp17";
+const char stringgp18[] PROGMEM = ":gp18";
+const char stringgp19[] PROGMEM = ":gp19";
+const char stringgp20[] PROGMEM = ":gp20";
+const char stringgp21[] PROGMEM = ":gp21";
+const char stringgp22[] PROGMEM = ":gp22";
+const char stringgp26[] PROGMEM = ":gp26";
+const char stringgp27[] PROGMEM = ":gp27";
+const char stringgp28[] PROGMEM = ":gp28";
+
+
+/*
+   Generic uLisp Extensions
+*/
+
 object *fn_now (object *args, object *env) {
   (void) env;
   static unsigned long Offset;
@@ -14,7 +45,7 @@ object *fn_now (object *args, object *env) {
     Offset = (unsigned long)((checkinteger(first(args))*60 + checkinteger(second(args)))*60
       + checkinteger(third(args)) - now);
   } else if (nargs > 0) error2(PSTR("wrong number of arguments"));
-  
+
   // Return time
   unsigned long secs = Offset + now;
   object *seconds = number(secs%60);
@@ -22,6 +53,10 @@ object *fn_now (object *args, object *env) {
   object *hours = number((secs/3600)%24);
   return cons(hours, cons(minutes, cons(seconds, NULL)));
 }
+const char stringnow[] PROGMEM = "now";
+const char docnow[] PROGMEM = "(now [hh mm ss])\n"
+"Sets the current time, or with no arguments returns the current time\n"
+"as a list of three integers (hh mm ss).";
 
 
 /*
@@ -506,6 +541,7 @@ object *fn_Sash (object *args, object *env) {
   return bignum_normalise(bignum);
 }
 
+
 // Symbol names
 const char stringSbignum[] PROGMEM = "$bignum";
 const char stringSinteger[] PROGMEM = "$integer";
@@ -524,7 +560,6 @@ const char stringSlogand[] PROGMEM = "$logand";
 const char stringSlogior[] PROGMEM = "$logior";
 const char stringSlogxor[] PROGMEM = "$logxor";
 const char stringSash[] PROGMEM = "$ash";
-const char stringnow[] PROGMEM = "now";
 
 // Documentation strings
 const char docSbignum[] PROGMEM = "($bignum int)\n"
@@ -561,12 +596,40 @@ const char docSlogxor[] PROGMEM = "($logxor bignum bignum)\n"
 "Returns the logical exclusive OR of two bignums.";
 const char docSash[] PROGMEM = "($ash bignum shift)\n"
 "Returns bignum shifted by shift bits; positive means left.";
-const char docnow[] PROGMEM = "(now [hh mm ss])\n"
-"Sets the current time, or with no arguments returns the current time\n"
-"as a list of three integers (hh mm ss).";
 
 // Symbol lookup table
 const tbl_entry_t lookup_table2[] PROGMEM = {
+  // RP2040
+  { stringtoesp32, (fn_ptr_type)1, 0, NULL },
+  { stringfromesp32, (fn_ptr_type)0, 0, NULL },
+  { stringgreenled, (fn_ptr_type)25, 0, NULL },
+  { stringgp2, (fn_ptr_type)2, 0, NULL },
+  { stringgp3, (fn_ptr_type)3, 0, NULL },
+  { stringgp4, (fn_ptr_type)4, 0, NULL },
+  { stringgp5, (fn_ptr_type)5, 0, NULL },
+  { stringgp6, (fn_ptr_type)6, 0, NULL },
+  { stringgp7, (fn_ptr_type)7, 0, NULL },
+  { stringgp8, (fn_ptr_type)8, 0, NULL },
+  { stringgp9, (fn_ptr_type)9, 0, NULL },
+  { stringgp10, (fn_ptr_type)10, 0, NULL },
+  { stringgp11, (fn_ptr_type)11, 0, NULL },
+  { stringgp12, (fn_ptr_type)12, 0, NULL },
+  { stringgp13, (fn_ptr_type)13, 0, NULL },
+  { stringgp14, (fn_ptr_type)14, 0, NULL },
+  { stringgp15, (fn_ptr_type)15, 0, NULL },
+  { stringgp16, (fn_ptr_type)16, 0, NULL },
+  { stringgp17, (fn_ptr_type)17, 0, NULL },
+  { stringgp18, (fn_ptr_type)18, 0, NULL },
+  { stringgp19, (fn_ptr_type)19, 0, NULL },
+  { stringgp20, (fn_ptr_type)20, 0, NULL },
+  { stringgp21, (fn_ptr_type)21, 0, NULL },
+  { stringgp22, (fn_ptr_type)22, 0, NULL },
+  { stringgp26, (fn_ptr_type)26, 0, NULL },
+  { stringgp27, (fn_ptr_type)27, 0, NULL },
+  { stringgp28, (fn_ptr_type)28, 0, NULL },
+  // Generic uLisp Extensions
+  { stringnow, fn_now, 0203, docnow },
+  // Arbitrary Precision uLisp Extension
   { stringSbignum, fn_Sbignum, 0211, docSbignum },
   { stringSinteger, fn_Sinteger, 0211, docSinteger },
   { stringSbignumstring, fn_Sbignumstring, 0212, docSbignumstring },
@@ -584,7 +647,6 @@ const tbl_entry_t lookup_table2[] PROGMEM = {
   { stringSlogior, fn_Slogior, 0222, docSlogior },
   { stringSlogxor, fn_Slogxor, 0222, docSlogxor },
   { stringSash, fn_Sash, 0222, docSash },
-  { stringnow, fn_now, 0203, docnow },
 };
 
 // Table cross-reference functions - do not edit below this line

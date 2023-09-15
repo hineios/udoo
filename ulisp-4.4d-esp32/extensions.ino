@@ -1,8 +1,28 @@
 /*
- User Extensions
+   ESP32
 */
-  
-// Definitions
+
+const char stringyellowled[] PROGMEM = ":yellow-led";
+const char stringblueled[] PROGMEM = ":blue-led";
+const char stringtorp2040[] PROGMEM = ":to-rp2040";
+const char stringfromrp2040[] PROGMEM = ":from-rp2040";
+const char stringswdio[] PROGMEM = ":swd-io";
+const char stringswdclk[] PROGMEM = ":swd-clk";
+const char stringswduse[] PROGMEM = ":swd-use";
+const char stringresetrp2040[] PROGMEM = ":reset-rp2040";
+const char stringCS[] PROGMEM = ":cs";
+const char stringSCK[] PROGMEM = ":sck";
+const char stringMOSI[] PROGMEM = ":mosi";
+const char stringMISO[] PROGMEM = ":miso";
+const char stringSDA[] PROGMEM = ":sda";
+const char stringSCL[] PROGMEM = ":scl";
+const char stringRXD[] PROGMEM = ":rxd";
+const char stringTXD[] PROGMEM = ":txd";
+
+/*
+   Generic uLisp Extensions
+*/
+
 object *fn_now (object *args, object *env) {
   (void) env;
   static unsigned long Offset;
@@ -14,7 +34,7 @@ object *fn_now (object *args, object *env) {
     Offset = (unsigned long)((checkinteger(first(args))*60 + checkinteger(second(args)))*60
       + checkinteger(third(args)) - now);
   } else if (nargs > 0) error2(PSTR("wrong number of arguments"));
-  
+
   // Return time
   unsigned long secs = Offset + now;
   object *seconds = number(secs%60);
@@ -22,6 +42,10 @@ object *fn_now (object *args, object *env) {
   object *hours = number((secs/3600)%24);
   return cons(hours, cons(minutes, cons(seconds, NULL)));
 }
+const char stringnow[] PROGMEM = "now";
+const char docnow[] PROGMEM = "(now [hh mm ss])\n"
+"Sets the current time, or with no arguments returns the current time\n"
+"as a list of three integers (hh mm ss).";
 
 
 /*
@@ -506,6 +530,7 @@ object *fn_Sash (object *args, object *env) {
   return bignum_normalise(bignum);
 }
 
+
 // Symbol names
 const char stringSbignum[] PROGMEM = "$bignum";
 const char stringSinteger[] PROGMEM = "$integer";
@@ -524,7 +549,6 @@ const char stringSlogand[] PROGMEM = "$logand";
 const char stringSlogior[] PROGMEM = "$logior";
 const char stringSlogxor[] PROGMEM = "$logxor";
 const char stringSash[] PROGMEM = "$ash";
-const char stringnow[] PROGMEM = "now";
 
 // Documentation strings
 const char docSbignum[] PROGMEM = "($bignum int)\n"
@@ -561,12 +585,29 @@ const char docSlogxor[] PROGMEM = "($logxor bignum bignum)\n"
 "Returns the logical exclusive OR of two bignums.";
 const char docSash[] PROGMEM = "($ash bignum shift)\n"
 "Returns bignum shifted by shift bits; positive means left.";
-const char docnow[] PROGMEM = "(now [hh mm ss])\n"
-"Sets the current time, or with no arguments returns the current time\n"
-"as a list of three integers (hh mm ss).";
 
 // Symbol lookup table
 const tbl_entry_t lookup_table2[] PROGMEM = {
+  // ESP32
+  { stringyellowled, (fn_ptr_type)33, 0, NULL },
+  { stringblueled, (fn_ptr_type)32, 0, NULL },
+  { stringtorp2040, (fn_ptr_type)19, 0, NULL },
+  { stringfromrp2040, (fn_ptr_type)22, 0, NULL },
+  { stringswdio, (fn_ptr_type)2, 0, NULL },
+  { stringswdclk, (fn_ptr_type)4, 0, NULL },
+  { stringswduse, (fn_ptr_type)5, 0, NULL },
+  { stringresetrp2040, (fn_ptr_type)23, 0, NULL },
+  { stringCS, (fn_ptr_type)15, 0, NULL },
+  { stringSCK, (fn_ptr_type)14, 0, NULL },
+  { stringMOSI, (fn_ptr_type)12, 0, NULL },
+  { stringMISO, (fn_ptr_type)35, 0, NULL },
+  { stringSDA, (fn_ptr_type)18, 0, NULL },
+  { stringSCL, (fn_ptr_type)21, 0, NULL },
+  { stringRXD, (fn_ptr_type)26, 0, NULL },
+  { stringTXD, (fn_ptr_type)13, 0, NULL },
+  // Generic uLisp Extensions
+  { stringnow, fn_now, 0203, docnow },
+  // Arbitrary Precision uLisp Extension
   { stringSbignum, fn_Sbignum, 0211, docSbignum },
   { stringSinteger, fn_Sinteger, 0211, docSinteger },
   { stringSbignumstring, fn_Sbignumstring, 0212, docSbignumstring },
@@ -584,7 +625,6 @@ const tbl_entry_t lookup_table2[] PROGMEM = {
   { stringSlogior, fn_Slogior, 0222, docSlogior },
   { stringSlogxor, fn_Slogxor, 0222, docSlogxor },
   { stringSash, fn_Sash, 0222, docSash },
-  { stringnow, fn_now, 0203, docnow },
 };
 
 // Table cross-reference functions - do not edit below this line
